@@ -6,9 +6,10 @@ A system that will save telemetry data from several commercial cars, after being
 This is the main hub application, containing all the saved data. A public connection will be established that will allow the Portable Application to access the saved data, as well as uploading the data from the Module Application.
 
 ### Features
+- [ ] Design interface - Considering JS
 - [ ] Custom telemetry files
 - [ ] Database to store the telemetry
-- [ ] Docker application to run
+- [ ] Package app to run
 - [ ] Global connection through computer IP
 - [ ] 
 
