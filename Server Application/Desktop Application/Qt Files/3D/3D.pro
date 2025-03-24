@@ -10,10 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    homewindow.cpp
+    homewindow.cpp \
+    pythonprocess.cpp
 
 HEADERS += \
-    homewindow.h
+    homewindow.h \
+    pythonprocess.h
 
 FORMS += \
     homewindow.ui
@@ -25,3 +27,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images.qrc
+
+DESTDIR = $$PWD/../deploy

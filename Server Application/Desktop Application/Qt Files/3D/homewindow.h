@@ -2,6 +2,9 @@
 #define HOMEWINDOW_H
 
 #include <QMainWindow>
+#include <QProcess>
+#include <pythonprocess.h>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,13 +21,16 @@ public:
     ~HomeWindow();
 
 private slots:
-    void on_pushButton_9_clicked();
-
     void on_startButton_clicked();
 
     void on_stopButton_clicked();
 
+    void updateStatus();
+    void updateConnections();
+
 private:
     Ui::HomeWindow *ui;
+    PythonProcess *networkListener;
+    QTimer *updateTimer;
 };
 #endif // HOMEWINDOW_H
