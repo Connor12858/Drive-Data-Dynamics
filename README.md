@@ -6,7 +6,7 @@ A system that will save telemetry data from several commercial cars, after being
 This is the main hub application, containing all the saved data. A public connection will be established that will allow the Portable Application to access the saved data, as well as uploading the data from the Module Application.
 
 ### Features
-- [ ] Design interface - Considering JS
+- [ ] Design interface - Settled on Qt
 - [ ] Custom telemetry files
 - [ ] Database to store the telemetry
 - [ ] Package app to run
@@ -41,3 +41,4 @@ There are a couple end goals that I would use to mark the project as complete. T
 - [ ] GPS Tracking of Cars 
 - [ ] Easy access to car module
 - [ ] Mobile Application to only view live data (??) 
+- [ ] Dynamic Telemetry file
