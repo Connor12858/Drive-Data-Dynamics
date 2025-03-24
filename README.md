@@ -17,7 +17,7 @@ This is the main hub application, containing all the saved data. A public connec
 ### Description
 This application would what is ran on the car module. Tracking the data that is need and sending it to the portable application. 
 
-### Featurs
+### Features
 - [ ] Track the data
 - [ ] Send over USB to computer
 - [ ]    
@@ -26,7 +26,7 @@ This application would what is ran on the car module. Tracking the data that is 
 ### Description
 This application would be the terminal or access points that would be run on laptops. This is how the consumer would access the data from the Server Application. After plugging into the module in the car, ideally easily, to download the information we can send it to the server application.
 
-### Featurs
+### Features
 - [ ] Copy data from module
 - [ ] Format the data
 - [ ] Analyse the data
