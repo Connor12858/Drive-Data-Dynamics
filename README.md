@@ -6,11 +6,11 @@ A system that will save telemetry data from several commercial cars, after being
 This is the main hub application, containing all the saved data. A public connection will be established that will allow the Portable Application to access the saved data, as well as uploading the data from the Module Application.
 
 ### Features
-- [ ] Design interface - Settled on Qt
+- [X] Design interface - Settled on Qt
 - [ ] Custom telemetry files
 - [ ] Database to store the telemetry
 - [ ] Package app to run
-- [ ] Global connection through computer IP
+- [X] Global connection through computer IP
 - [ ] 
 
 ## Module Application 
@@ -30,7 +30,7 @@ This application would be the terminal or access points that would be run on lap
 - [ ] Copy data from module
 - [ ] Format the data
 - [ ] Analyse the data
-- [ ] Access to the computer (setting the server address)
+- [X] Access to the computer (setting the server address)
 - [ ] Upload the data 
 - [ ] 
 
