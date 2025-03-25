@@ -17,6 +17,8 @@ public:
 
     void stopProcess();
 
+    void sendCommand(const QString &command);
+
     bool isProcessRunning() const;
 
 private slots:

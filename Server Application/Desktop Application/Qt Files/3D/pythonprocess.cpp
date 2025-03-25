@@ -10,9 +10,19 @@ PythonProcess::PythonProcess(const QString &file, QObject *parent) : QObject(par
     pythonFile = file;
 }
 
+void PythonProcess::sendCommand(const QString &command) {
+    if (process->state() == QProcess::Running) {
+        process->write(command.toUtf8() + "\n");  // Send command to Python script
+        process->waitForBytesWritten();
+    } else {
+        qDebug() << "Python process is not running.";
+    }
+}
+
 void PythonProcess::startProcess()
 {
     // Run Python in unbuffered mode (-u)
+    process->setProcessChannelMode(QProcess::MergedChannels);
     process->start("python", QStringList() << "-u" << pythonFile);
 
     // Read standard output in real-time
@@ -31,7 +41,7 @@ void PythonProcess::stopProcess()
     if (process->state() == QProcess::Running)
     {
         process->terminate(); // Gracefully stop the process
-        if (!process->waitForFinished(3000))
+        if (!process->waitForFinished(1000))
         {
             process->kill(); // Force kill if it doesn't stop
         }

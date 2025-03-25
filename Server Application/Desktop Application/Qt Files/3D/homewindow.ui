@@ -374,7 +374,10 @@ QWidget:disabled {
       <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QListWidget::item { 
+	text-align: center; 
+	width: 100%;
+}</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::Shape::NoFrame</enum>
@@ -394,9 +397,32 @@ QWidget:disabled {
      <property name="viewMode">
       <enum>QListView::ViewMode::ListMode</enum>
      </property>
+     <property name="itemAlignment">
+      <set>Qt::AlignmentFlag::AlignRight</set>
+     </property>
      <property name="sortingEnabled">
       <bool>true</bool>
      </property>
+     <item>
+      <property name="text">
+       <string>New Item</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>New Item</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>New Item</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>New Item</string>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QFrame" name="databaseFrame">

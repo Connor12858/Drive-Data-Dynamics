@@ -28,6 +28,8 @@ private slots:
     void updateStatus();
     void updateConnections();
 
+    void on_kickButton_clicked();
+
 private:
     Ui::HomeWindow *ui;
     PythonProcess *networkListener;

@@ -40,6 +40,7 @@ void HomeWindow::on_stopButton_clicked()
 {
     ui->startButton->setDisabled(false);
 
+    networkListener->sendCommand("kick all");
     networkListener->stopProcess();
 
     ui->stopButton->setDisabled(true);
@@ -61,16 +62,23 @@ void HomeWindow::updateStatus() {
 void HomeWindow::updateConnections() {
 
     ui->connectionsList->clear();
-    QFile inputFile("D:\\Drive-Data-Dynamics\\Server Application\\Network Connection\\connections.list");
+    QFile inputFile("D:\\Drive-Data-Dynamics\\Server Application\\Network Connection\\connections.ini");
     if (inputFile.open(QIODevice::ReadOnly))
     {
         QTextStream in(&inputFile);
         while (!in.atEnd())
         {
-            QString connectionText = in.readLine();
+
+            QString connectionText = in.readLine().remove(QChar('(')).remove(QChar(')')).remove(QChar('\'')).replace(", ", ":");
             ui->connectionsList->addItem(connectionText);
             //qDebug() << in.readLine();
         }
         inputFile.close();
     }
 }
+
+void HomeWindow::on_kickButton_clicked()
+{
+    networkListener->sendCommand("kick all");
+}
+

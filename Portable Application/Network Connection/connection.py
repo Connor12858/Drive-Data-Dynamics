@@ -1,32 +1,49 @@
 import socket
 import time
 import threading
+import os
+from announce import announce
 
-SERVER_IP = "localhost"  # Replace with the server's IP address
-SERVER_PORT = 12345  # Replace with the server's port
+# Constants
+client_socket = SERVER_IP = SERVER_PORT = REQUEST_MESSAGE = None
 
-def announce(client_socket, message):
-    try:
-        while True:
-            time.sleep(0.5)  # Send every 500 milliseconds
-            client_socket.sendall(message.encode('utf-8'))
+CONFIG_FILE = "config.ini"   
 
-    except ConnectionRefusedError:
-        print("Connection refused. Server might not be running.")
-    except Exception as e:
-        print(f"Error: {e}")
-    finally:
-        if client_socket:
-            client_socket.close()
-            print("Connection closed.")
 
-if __name__ == "__main__":
+def setup():
+    global SERVER_IP, SERVER_PORT, REQUEST_MESSAGE
+
+    # Load configuration from file
+    config_path = os.path.join(os.path.dirname(__file__), CONFIG_FILE)
+    if os.path.exists(config_path):
+        with open(config_path, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                key, value = line.strip().split('=')
+                if key == 'HOST':
+                    SERVER_IP = value
+                elif key == 'PORT':
+                    SERVER_PORT = int(value)
+                elif key == 'REQUEST_MESSAGE':
+                    REQUEST_MESSAGE = value
+    else:
+        SERVER_IP = 'localhost'
+        SERVER_PORT = 12345
+        REQUEST_MESSAGE = "REQUEST"
+
+
+def connect():
+    global client_socket
+
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((SERVER_IP, SERVER_PORT))
-    print(f"Connected to {SERVER_IP}:{SERVER_PORT}")
-    client_socket.sendall("request".encode('utf-8'))
-    message = client_socket.recv(1024).decode('utf-8')
-    print(message)
+    client_socket.sendall(REQUEST_MESSAGE.encode('utf-8'))
+    return client_socket.recv(1024).decode('utf-8')
+
+if __name__ == "__main__":
+    setup()
+
+    message = connect()
 
     announce_thread = threading.Thread(target=announce, args=(client_socket, message))
     announce_thread.start()
