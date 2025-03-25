@@ -27,11 +27,7 @@ void PythonProcess::startProcess()
 
     // Read standard output in real-time
     connect(process, &QProcess::readyReadStandardOutput, this, &PythonProcess::readOutput);
-
-    // Read standard error in real-time
     connect(process, &QProcess::readyReadStandardError, this, &PythonProcess::readError);
-
-    // Handle process exit
     connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &PythonProcess::processFinished);
 }

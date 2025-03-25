@@ -45,15 +45,16 @@ def setup():
         with open(CONFIG_FILE, 'r') as f:
             lines = f.readlines()
             for line in lines:
-                key, value = line.strip().split('=')
-                if key == 'INACTIVITY_TIMEOUT':
-                    INACTIVITY_TIMEOUT = int(value)
-                elif key == 'HOST':
-                    HOST = value
-                elif key == 'PORT':
-                    PORT = int(value)
-                elif key == 'REQUEST_MESSAGE':
-                    REQUEST_MESSAGE = value
+                if "=" in line:
+                    key, value = line.strip().split('=')
+                    if key == 'INACTIVITY_TIMEOUT':
+                        INACTIVITY_TIMEOUT = int(value)
+                    elif key == 'HOST':
+                        HOST = value
+                    elif key == 'PORT':
+                        PORT = int(value)
+                    elif key == 'REQUEST_MESSAGE':
+                        REQUEST_MESSAGE = value
     # Set default values if not loaded
     else:
         INACTIVITY_TIMEOUT = 1

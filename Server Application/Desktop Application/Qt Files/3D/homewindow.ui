@@ -457,7 +457,7 @@ border-left-color: qlineargradient(spread:pad, x1:1, y1:0.5, x2:0, y2:0.5, stop:
      <number>10</number>
     </property>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="settingsTabs">
     <property name="geometry">
      <rect>
       <x>960</x>
@@ -466,14 +466,168 @@ border-left-color: qlineargradient(spread:pad, x1:1, y1:0.5, x2:0, y2:0.5, stop:
       <height>191</height>
      </rect>
     </property>
-    <widget class="QWidget" name="tab">
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="connectionTabs">
      <attribute name="title">
-      <string>Tab 1</string>
+      <string>Connection</string>
      </attribute>
+     <widget class="QLabel" name="portInputLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>71</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Port:</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="portInputBox">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>40</y>
+        <width>101</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LayoutDirection::LeftToRight</enum>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="maximum">
+       <number>65535</number>
+      </property>
+      <property name="stepType">
+       <enum>QAbstractSpinBox::StepType::DefaultStepType</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="timeoutInputLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>71</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Timeout:</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="timeoutInputBox">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>70</y>
+        <width>101</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LayoutDirection::LeftToRight</enum>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>30</number>
+      </property>
+      <property name="stepType">
+       <enum>QAbstractSpinBox::StepType::DefaultStepType</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="hostInputLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>71</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Plain</enum>
+      </property>
+      <property name="text">
+       <string>IP:</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="hostInputBox">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>10</y>
+        <width>101</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="maxLength">
+       <number>15</number>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="connectionSaveButton">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>130</y>
+        <width>80</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(0, 85, 0);</string>
+      </property>
+      <property name="text">
+       <string>Save</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
-      <string>Tab 2</string>
+      <string>Other</string>
      </attribute>
     </widget>
    </widget>
@@ -568,6 +722,17 @@ border-left-color: qlineargradient(spread:pad, x1:1, y1:0.5, x2:0, y2:0.5, stop:
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>startButton</tabstop>
+  <tabstop>stopButton</tabstop>
+  <tabstop>kickButton</tabstop>
+  <tabstop>connectionsList</tabstop>
+  <tabstop>settingsTabs</tabstop>
+  <tabstop>hostInputBox</tabstop>
+  <tabstop>portInputBox</tabstop>
+  <tabstop>timeoutInputBox</tabstop>
+  <tabstop>connectionSaveButton</tabstop>
+ </tabstops>
  <resources>
   <include location="images.qrc"/>
  </resources>

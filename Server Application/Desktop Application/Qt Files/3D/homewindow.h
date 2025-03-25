@@ -30,9 +30,21 @@ private slots:
 
     void on_kickButton_clicked();
 
+    void SettingsSetup();
+    void SaveSettings();
+
+    void on_portInputBox_valueChanged(int value);
+
+    void on_connectionSaveButton_clicked();
+
+    void on_timeoutInputBox_valueChanged(int value);
+
 private:
     Ui::HomeWindow *ui;
     PythonProcess *networkListener;
     QTimer *updateTimer;
+
+    QMap<QString, QString> configMap;
+    QStringList configLines;
 };
 #endif // HOMEWINDOW_H
