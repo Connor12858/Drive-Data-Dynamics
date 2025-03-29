@@ -7,8 +7,7 @@ from announce import announce
 # Constants
 client_socket = SERVER_IP = SERVER_PORT = REQUEST_MESSAGE = None
 
-CONFIG_FILE = "config.ini"   
-
+CONFIG_FILE = os.path.join(os.path.dirname(__file__), "../config/config.ini")  
 
 def setup():
     global SERVER_IP, SERVER_PORT, REQUEST_MESSAGE
@@ -45,5 +44,5 @@ if __name__ == "__main__":
 
     message = connect()
 
-    announce_thread = threading.Thread(target=announce, args=(client_socket, message))
+    announce_thread = threading.Thread(target=announce, args=(client_socket, "message"))
     announce_thread.start()
