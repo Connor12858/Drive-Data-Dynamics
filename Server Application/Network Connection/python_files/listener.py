@@ -11,8 +11,8 @@ import sys
 # Constants
 INACTIVITY_TIMEOUT = HOST = PORT = REQUEST_MESSAGE = None
 ANNOUNCE_MESSAGE = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
-CONNECTIONS_FILE = os.path.join(os.path.dirname(__file__), "connections.ini")
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.ini")  
+CONNECTIONS_FILE = os.path.join(os.path.dirname(__file__), "../config/connections.ini")
+CONFIG_FILE = os.path.join(os.path.dirname(__file__), "../config/config.ini")  
 LOG_FILE = os.path.join(os.path.dirname(__file__), "log.txt")
 
 # Global dictionary to store client information (address: last_activity_time)
@@ -32,9 +32,11 @@ def handle_commands():
             if command == "kick all":
                 kick_all.kick_all(client_threads, client_sockets, remove_client)
             else:
-                print(f"Unknown command: {command}", flush=True)
+                pass
+                #print(f"Unknown command: {command}", flush=True)
         except Exception as e:
-            print(f"Error: {e}", flush=True)
+            pass
+            #print(f"Error: {e}", flush=True)
 
 # Function to load configuration from file
 def setup():
@@ -84,9 +86,9 @@ def handle_client(client_socket, address):
                 log(f"Received from {address}: {message}")
 
     except ConnectionResetError:
-        print(f"Connection reset by {address}")
+        log(f"Connection reset by {address}")
     except Exception as e:
-        print(f"Error with {address}: {e}")
+        log(f"Error with {address}: {e}")
     finally:
         log(f"Connection closed with {address}")
         del client_sockets[address]  # Remove the socket
@@ -116,7 +118,8 @@ def check_inactive_clients():
                     client_sockets[addr].shutdown(socket.SHUT_RDWR)  # Prevent further sending/receiving
                     client_sockets[addr].close() # Close the socket
                 except OSError as e:
-                    print(f"Error closing socket for {addr}: {e}")
+                    pass
+                    #print(f"Error closing socket for {addr}: {e}")
                 del client_sockets[addr]  # Remove the socket
             remove_client(addr)
 
@@ -132,7 +135,7 @@ def main():
         server.bind((HOST, PORT))
         server.listen(5)
     except Exception as e:
-        print(f"Error creating or binding socket: {e}")
+        #print(f"Error creating or binding socket: {e}")
         traceback.log_exc()
         return
 
@@ -148,7 +151,7 @@ def main():
             client_threads[addr] = client_handler
             client_handler.start()
         except Exception as e:
-            print(f"Error accepting connection: {e}")
+            #print(f"Error accepting connection: {e}")
             traceback.log_exc()
 
 if __name__ == "__main__":

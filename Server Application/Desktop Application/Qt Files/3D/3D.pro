@@ -28,4 +28,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     images.qrc
 
-DESTDIR = $$PWD/../deploy
+DESTDIR = $$PWD/../deploy/libs

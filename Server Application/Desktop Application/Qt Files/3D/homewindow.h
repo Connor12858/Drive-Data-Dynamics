@@ -41,6 +41,7 @@ private slots:
 
 private:
     Ui::HomeWindow *ui;
+    QString buildPath;
     PythonProcess *networkListener;
     QTimer *updateTimer;
 

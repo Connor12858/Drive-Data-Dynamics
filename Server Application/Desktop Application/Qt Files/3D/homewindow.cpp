@@ -5,7 +5,8 @@
 HomeWindow::HomeWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::HomeWindow)
-    , networkListener(new PythonProcess("../../../Network Connection/listener.py", this))
+    , buildPath(QCoreApplication::applicationDirPath())
+    , networkListener(new PythonProcess(buildPath + "/../python_files/listener.exe", this))
     , updateTimer(new QTimer(this))
 {
     ui->setupUi(this);
@@ -65,7 +66,7 @@ void HomeWindow::updateStatus() {
 void HomeWindow::updateConnections() {
 
     ui->connectionsList->clear();
-    QFile inputFile("D:\\Drive-Data-Dynamics\\Server Application\\Network Connection\\connections.ini");
+    QFile inputFile(buildPath + "/../config/connections.ini");
     if (inputFile.open(QIODevice::ReadOnly))
     {
         QTextStream in(&inputFile);
@@ -87,7 +88,7 @@ void HomeWindow::on_kickButton_clicked()
 
 void HomeWindow::SettingsSetup() {
     //Open the file
-    QFile configFile("D:\\Drive-Data-Dynamics\\Server Application\\Network Connection\\config.ini");
+    QFile configFile(buildPath + "/../config/config.ini");
 
     configMap.clear();
     configLines.clear();
@@ -125,7 +126,7 @@ void HomeWindow::SettingsSetup() {
 
 // Save the updated settings while preserving the original structure
 void HomeWindow::SaveSettings() {
-    QFile configFile("D:\\Drive-Data-Dynamics\\Server Application\\Network Connection\\config.ini");
+    QFile configFile(buildPath + "/../config/config.ini");
 
     // Save the updated key value
     if (configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {

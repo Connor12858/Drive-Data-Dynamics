@@ -403,26 +403,6 @@ QWidget:disabled {
      <property name="sortingEnabled">
       <bool>true</bool>
      </property>
-     <item>
-      <property name="text">
-       <string>New Item</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>New Item</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>New Item</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>New Item</string>
-      </property>
-     </item>
     </widget>
    </widget>
    <widget class="QFrame" name="databaseFrame">
