@@ -1,13 +1,9 @@
 #include "homemenu.h"
-#include <QFile>
 #include "ui_homemenu.h"
+#include <QFile>
 
 HomeMenu::HomeMenu(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::HomeMenu)
-    , buildPath(QCoreApplication::applicationDirPath())
-    , networkConnection(new PythonProcess(buildPath + "/../python_files/connection.py", this))
-    , updateTimer(new QTimer(this))
+    : QMainWindow(parent), ui(new Ui::HomeMenu), buildPath(QCoreApplication::applicationDirPath()), networkConnection(new PythonProcess(buildPath + "/../python_files/connection.py", this)), updateTimer(new QTimer(this))
 {
     ui->setupUi(this);
 
@@ -16,7 +12,7 @@ HomeMenu::HomeMenu(QWidget *parent)
 
     // Connect QTimer to update the UI every second
     connect(updateTimer, &QTimer::timeout, this, &HomeMenu::updateStatus);
-    updateTimer->start(3000);  // Check every 3 seconds
+    updateTimer->start(3000); // Check every 3 seconds
 }
 
 HomeMenu::~HomeMenu()
@@ -45,37 +41,53 @@ void HomeMenu::on_stopButton_clicked()
     ui->stopButton->setDisabled(true);
 }
 
-
+// Change the settings
+void HomeMenu::on_hostInputBox_textChanged(const QString &value)
+{
+    configMap["HOST"] = value;
+}
+void HomeMenu::on_portInputBox_textChanged(const QString &value)
+{
+    configMap["PORT"] = value;
+}
 void HomeMenu::on_connectionSaveButton_clicked()
 {
     SaveSettings();
 }
 
-void HomeMenu::updateStatus() {
+// Intervally update the status of the connection
+void HomeMenu::updateStatus()
+{
     QPixmap on(":Images/on.png");
     QPixmap off(":Images/off.png");
 
     // Connection Status
-    if (networkConnection->isProcessRunning()) {
+    if (networkConnection->isProcessRunning())
+    {
         ui->connectionStatusLight->setPixmap(on);
-    } else {
+    }
+    else
+    {
         ui->connectionStatusLight->setPixmap(off);
     }
 }
 
-
-void HomeMenu::SettingsSetup() {
-    //Open the file
+// Setup the settings
+void HomeMenu::SettingsSetup()
+{
+    // Open the file
     QFile configFile(buildPath + "/../config/config.ini");
 
     configMap.clear();
     configLines.clear();
 
     // Map the config
-    if (configFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (configFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         QTextStream in(&configFile);
 
-        while (!in.atEnd()) {
+        while (!in.atEnd())
+        {
             QString line = in.readLine();
             configLines.append(line);
 
@@ -85,7 +97,8 @@ void HomeMenu::SettingsSetup() {
 
             // Split into key and value
             QStringList parts = line.split("=", Qt::SkipEmptyParts);
-            if (parts.size() == 2) {
+            if (parts.size() == 2)
+            {
                 QString key = parts[0].trimmed();
                 QString value = parts[1].trimmed();
 
@@ -102,45 +115,39 @@ void HomeMenu::SettingsSetup() {
 }
 
 // Save the updated settings while preserving the original structure
-void HomeMenu::SaveSettings() {
+void HomeMenu::SaveSettings()
+{
     QFile configFile(buildPath + "/../config/config.ini");
 
     // Save the updated key value
-    if (configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+    if (configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+    {
         QTextStream out(&configFile);
 
-        for (QString &line : configLines) {
+        for (QString &line : configLines)
+        {
             QString trimmedLine = line.trimmed();
 
             // If it's a key=value pair, update it
-            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("#") && trimmedLine.contains("=")) {
+            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("#") && trimmedLine.contains("="))
+            {
                 QStringList parts = trimmedLine.split("=", Qt::SkipEmptyParts);
-                if (parts.size() == 2) {
+                if (parts.size() == 2)
+                {
                     QString key = parts[0].trimmed();
-                    if (configMap.contains(key)) {
-                        line = key + "=" + configMap[key];  // Replace with new value
+                    if (configMap.contains(key))
+                    {
+                        line = key + "=" + configMap[key]; // Replace with new value
                     }
                 }
             }
-            out << line << "\n";  // Write the (updated) line
+            out << line << "\n"; // Write the (updated) line
         }
 
         configFile.close();
-    } else {
+    }
+    else
+    {
         qDebug() << "Failed to open config file for writing.";
     }
 }
-
-
-
-void HomeMenu::on_hostInputBox_textChanged(const QString &value)
-{
-    configMap["HOST"] = value;
-}
-
-
-void HomeMenu::on_portInputBox_textChanged(const QString &value)
-{
-    configMap["PORT"] = value;
-}
-

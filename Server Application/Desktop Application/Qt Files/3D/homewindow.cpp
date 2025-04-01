@@ -3,11 +3,7 @@
 #include <QFile>
 
 HomeWindow::HomeWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::HomeWindow)
-    , buildPath(QCoreApplication::applicationDirPath())
-    , networkListener(new PythonProcess(buildPath + "/../python_files/listener.py", this))
-    , updateTimer(new QTimer(this))
+    : QMainWindow(parent), ui(new Ui::HomeWindow), buildPath(QCoreApplication::applicationDirPath()), networkListener(new PythonProcess(buildPath + "/../python_files/listener.py", this)), updateTimer(new QTimer(this))
 {
     ui->setupUi(this);
 
@@ -16,11 +12,11 @@ HomeWindow::HomeWindow(QWidget *parent)
 
     // Connect QTimer to update the UI every second
     connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateStatus);
-    updateTimer->start(3000);  // Check every 3 seconds
+    updateTimer->start(3000); // Check every 3 seconds
 
     // Connect QTimer to update the UI every second
     connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateConnections);
-    updateTimer->start(1000);  // Check every second
+    updateTimer->start(1000); // Check every second
 }
 
 HomeWindow::~HomeWindow()
@@ -51,19 +47,46 @@ void HomeWindow::on_stopButton_clicked()
     ui->kickButton->setDisabled(true);
 }
 
-void HomeWindow::updateStatus() {
+// Kick all the users connected to the server
+void HomeWindow::on_kickButton_clicked()
+{
+    networkListener->sendCommand("kick all");
+}
+
+// Change the settings
+void HomeWindow::on_portInputBox_valueChanged(int value)
+{
+    configMap["PORT"] = QString::number(value);
+}
+void HomeWindow::on_timeoutInputBox_valueChanged(int value)
+{
+    configMap["INACTIVITY_TIMEOUT"] = QString::number(value);
+}
+void HomeWindow::on_connectionSaveButton_clicked()
+{
+    SaveSettings();
+}
+
+// Intervally update the status of the connection
+void HomeWindow::updateStatus()
+{
     QPixmap on(":Images/on.png");
     QPixmap off(":Images/off.png");
 
     // Connection Status
-    if (networkListener->isProcessRunning()) {
+    if (networkListener->isProcessRunning())
+    {
         ui->connectionStatusLight->setPixmap(on);
-    } else {
+    }
+    else
+    {
         ui->connectionStatusLight->setPixmap(off);
     }
 }
 
-void HomeWindow::updateConnections() {
+// Intervally update the list of the connections
+void HomeWindow::updateConnections()
+{
 
     ui->connectionsList->clear();
     QFile inputFile(buildPath + "/../config/connections.ini");
@@ -75,29 +98,28 @@ void HomeWindow::updateConnections() {
 
             QString connectionText = in.readLine().remove(QChar('(')).remove(QChar(')')).remove(QChar('\'')).replace(", ", ":");
             ui->connectionsList->addItem(connectionText);
-            //qDebug() << in.readLine();
+            // qDebug() << in.readLine();
         }
         inputFile.close();
     }
 }
 
-void HomeWindow::on_kickButton_clicked()
+// Setup the settings
+void HomeWindow::SettingsSetup()
 {
-    networkListener->sendCommand("kick all");
-}
-
-void HomeWindow::SettingsSetup() {
-    //Open the file
+    // Open the file
     QFile configFile(buildPath + "/../config/config.ini");
 
     configMap.clear();
     configLines.clear();
 
     // Map the config
-    if (configFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (configFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
         QTextStream in(&configFile);
 
-        while (!in.atEnd()) {
+        while (!in.atEnd())
+        {
             QString line = in.readLine();
             configLines.append(line);
 
@@ -107,7 +129,8 @@ void HomeWindow::SettingsSetup() {
 
             // Split into key and value
             QStringList parts = line.split("=", Qt::SkipEmptyParts);
-            if (parts.size() == 2) {
+            if (parts.size() == 2)
+            {
                 QString key = parts[0].trimmed();
                 QString value = parts[1].trimmed();
 
@@ -125,46 +148,39 @@ void HomeWindow::SettingsSetup() {
 }
 
 // Save the updated settings while preserving the original structure
-void HomeWindow::SaveSettings() {
+void HomeWindow::SaveSettings()
+{
     QFile configFile(buildPath + "/../config/config.ini");
 
     // Save the updated key value
-    if (configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+    if (configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+    {
         QTextStream out(&configFile);
 
-        for (QString &line : configLines) {
+        for (QString &line : configLines)
+        {
             QString trimmedLine = line.trimmed();
 
             // If it's a key=value pair, update it
-            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("#") && trimmedLine.contains("=")) {
+            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("#") && trimmedLine.contains("="))
+            {
                 QStringList parts = trimmedLine.split("=", Qt::SkipEmptyParts);
-                if (parts.size() == 2) {
+                if (parts.size() == 2)
+                {
                     QString key = parts[0].trimmed();
-                    if (configMap.contains(key)) {
-                        line = key + "=" + configMap[key];  // Replace with new value
+                    if (configMap.contains(key))
+                    {
+                        line = key + "=" + configMap[key]; // Replace with new value
                     }
                 }
             }
-            out << line << "\n";  // Write the (updated) line
+            out << line << "\n"; // Write the (updated) line
         }
 
         configFile.close();
-    } else {
+    }
+    else
+    {
         qDebug() << "Failed to open config file for writing.";
     }
 }
-
-// Change the settings
-void HomeWindow::on_portInputBox_valueChanged(int value)
-{
-    configMap["PORT"] = QString::number(value);
-}
-void HomeWindow::on_timeoutInputBox_valueChanged(int value)
-{
-    configMap["INACTIVITY_TIMEOUT"] = QString::number(value);
-}
-void HomeWindow::on_connectionSaveButton_clicked()
-{
-    SaveSettings();
-}
-

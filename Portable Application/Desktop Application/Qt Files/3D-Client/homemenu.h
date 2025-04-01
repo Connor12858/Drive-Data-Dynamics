@@ -7,8 +7,9 @@
 #include <QTimer>
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class HomeMenu;
+namespace Ui
+{
+    class HomeMenu;
 }
 QT_END_NAMESPACE
 
@@ -32,7 +33,6 @@ private slots:
     void SaveSettings();
 
     void on_hostInputBox_textChanged(const QString &value);
-
     void on_portInputBox_textChanged(const QString &value);
 
 private:
