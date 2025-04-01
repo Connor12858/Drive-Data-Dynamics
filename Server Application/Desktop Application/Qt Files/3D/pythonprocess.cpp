@@ -23,7 +23,7 @@ void PythonProcess::startProcess()
 {
     // Run Python in unbuffered mode (-u)
     process->setProcessChannelMode(QProcess::MergedChannels);
-    process->start(pythonFile);
+    process->start("python", QStringList() << "-u" << pythonFile);
 
     // Read standard output in real-time
     connect(process, &QProcess::readyReadStandardOutput, this, &PythonProcess::readOutput);

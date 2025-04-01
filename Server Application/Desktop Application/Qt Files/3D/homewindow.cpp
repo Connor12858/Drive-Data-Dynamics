@@ -6,10 +6,12 @@ HomeWindow::HomeWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::HomeWindow)
     , buildPath(QCoreApplication::applicationDirPath())
-    , networkListener(new PythonProcess(buildPath + "/../python_files/listener.exe", this))
+    , networkListener(new PythonProcess(buildPath + "/../python_files/listener.py", this))
     , updateTimer(new QTimer(this))
 {
     ui->setupUi(this);
+
+    qDebug() << buildPath + "/../python_files/listener.py";
 
     // Setup the settings
     SettingsSetup();
