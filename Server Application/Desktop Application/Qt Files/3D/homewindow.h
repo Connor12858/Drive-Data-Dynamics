@@ -4,7 +4,10 @@
 #include <QMainWindow>
 #include <QProcess>
 #include <pythonprocess.h>
+#include <QFileSystemWatcher>
 #include <QTimer>
+#include <QSqlTableModel>
+#include "DatabaseManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -37,6 +40,10 @@ private slots:
     void on_portInputBox_valueChanged(int value);
     void on_timeoutInputBox_valueChanged(int value);
 
+    void fetchLogFiles();
+    void onDirectoryChanged(const QString &path);
+    void setupTableView();
+
 private:
     Ui::HomeWindow *ui;
     QString buildPath;
@@ -45,5 +52,9 @@ private:
 
     QMap<QString, QString> configMap;
     QStringList configLines;
+
+    DatabaseManager *dbManager;
+    QFileSystemWatcher *fileWatcher;
+    QSqlTableModel *dbModel;
 };
 #endif // HOMEWINDOW_H

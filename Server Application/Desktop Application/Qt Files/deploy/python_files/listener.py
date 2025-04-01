@@ -82,6 +82,9 @@ def handle_client(client_socket, address):
             elif message == REQUEST_MESSAGE:
                 client_socket.sendall(ANNOUNCE_MESSAGE.encode('utf-8'))
                 log(f"Announcement message requested from {address}")
+            elif message.startswith("FILE"):
+                # Create a file in the logs
+                pass
             else:
                 log(f"Received from {address}: {message}")
 

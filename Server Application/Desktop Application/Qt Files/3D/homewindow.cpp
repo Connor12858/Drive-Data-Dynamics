@@ -1,9 +1,12 @@
 #include "homewindow.h"
 #include "ui_homewindow.h"
 #include <QFile>
+#include <QSqlTableModel>
+#include <QFileSystemWatcher>
 
 HomeWindow::HomeWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::HomeWindow), buildPath(QCoreApplication::applicationDirPath()), networkListener(new PythonProcess(buildPath + "/../python_files/listener.py", this)), updateTimer(new QTimer(this))
+    : QMainWindow(parent), ui(new Ui::HomeWindow), buildPath(QCoreApplication::applicationDirPath()), networkListener(new PythonProcess(buildPath + "/../python_files/listener.py", this)), updateTimer(new QTimer(this)),
+    fileWatcher(new QFileSystemWatcher(this))
 {
     ui->setupUi(this);
 
@@ -17,6 +20,32 @@ HomeWindow::HomeWindow(QWidget *parent)
     // Connect QTimer to update the UI every second
     connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateConnections);
     updateTimer->start(1000); // Check every second
+
+    // Initialize the DatabaseManager and open the database
+    dbManager = new DatabaseManager(this);
+    QString dbPath = QDir::currentPath() + "/can_logs.db";  // Assuming the db is in the current directory
+    dbManager->openDatabase(dbPath);
+
+    // Path to monitor (modify based on your specific setup)
+    QString watchFolderPath = QDir::currentPath() + "/../can_logs";  // The folder where your log files are uploaded
+
+    // Set up QFileSystemWatcher
+    if (!fileWatcher->directories().contains(watchFolderPath)) {
+        fileWatcher->addPath(watchFolderPath);  // Watch this folder for changes
+    }
+
+    connect(fileWatcher, &QFileSystemWatcher::directoryChanged, this, &HomeWindow::onDirectoryChanged);
+
+    // Connect QTimer to update the UI every second
+    connect(updateTimer, &QTimer::timeout, this, &HomeWindow::fetchLogFiles);
+    updateTimer->start(10000); // Check every 10 second
+
+    // Create a QSqlTableModel object
+    dbModel = new QSqlTableModel(this);
+    // Set up the table view to display the data
+    setupTableView();
+
+    fetchLogFiles();
 }
 
 HomeWindow::~HomeWindow()
@@ -81,6 +110,13 @@ void HomeWindow::updateStatus()
     else
     {
         ui->connectionStatusLight->setPixmap(off);
+    }
+
+    // Database status
+    if (dbManager->isOpen()) {
+        ui->databaseStatusLight->setPixmap(on);
+    } else {
+        ui->databaseStatusLight->setPixmap(off);
     }
 }
 
@@ -183,4 +219,49 @@ void HomeWindow::SaveSettings()
     {
         qDebug() << "Failed to open config file for writing.";
     }
+}
+
+// Fetch the log files
+void HomeWindow::fetchLogFiles()
+{
+    dbModel->select();
+}
+
+void HomeWindow::onDirectoryChanged(const QString &path)
+{
+    QDir dir(path);
+
+    // Retrieve the list of all files in the folder
+    QFileInfoList fileList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+
+    for (const QFileInfo &fileInfo : fileList) {
+        QString filename = fileInfo.fileName();
+        filename = filename.left(filename.lastIndexOf('.'));
+        QString filepath = fileInfo.absoluteFilePath();
+
+        QString clientName = "Unknown";
+        QString eventName = "NewEvent";
+
+        // Insert the log file metadata into the database
+        dbManager->insertLogFile(filename, filepath, clientName, eventName);
+    }
+}
+
+// In your HomeWindow constructor or initialization function
+void HomeWindow::setupTableView() {
+    // Set the model to connect to the table in the database
+    dbModel->setTable("log_files");
+    dbModel->setEditStrategy(QSqlTableModel::OnFieldChange);
+    dbModel->select();  // Fetch data from the database and load it into the model
+
+    // Set the model to the table view
+    ui->dbTableView->setModel(dbModel);
+    ui->dbTableView->setColumnHidden(dbModel->fieldIndex("id"), true);
+    ui->dbTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    // Resize the columns to fit the content
+    ui->dbTableView->resizeColumnsToContents();
+
+    // Set a fixed height for the rows (just for appearance)
+    ui->dbTableView->setRowHeight(0, 30);
 }
