@@ -1,12 +1,12 @@
-#include "homewindow.h"
-#include "ui_homewindow.h"
+#include "homemenu.h"
 #include <QFile>
+#include "ui_homemenu.h"
 
-HomeWindow::HomeWindow(QWidget *parent)
+HomeMenu::HomeMenu(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::HomeWindow)
+    , ui(new Ui::HomeMenu)
     , buildPath(QCoreApplication::applicationDirPath())
-    , networkListener(new PythonProcess(buildPath + "/../python_files/listener.py", this))
+    , networkConnection(new PythonProcess(buildPath + "/../python_files/connection.py", this))
     , updateTimer(new QTimer(this))
 {
     ui->setupUi(this);
@@ -15,78 +15,56 @@ HomeWindow::HomeWindow(QWidget *parent)
     SettingsSetup();
 
     // Connect QTimer to update the UI every second
-    connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateStatus);
+    connect(updateTimer, &QTimer::timeout, this, &HomeMenu::updateStatus);
     updateTimer->start(3000);  // Check every 3 seconds
-
-    // Connect QTimer to update the UI every second
-    connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateConnections);
-    updateTimer->start(1000);  // Check every second
 }
 
-HomeWindow::~HomeWindow()
+HomeMenu::~HomeMenu()
 {
-    networkListener->stopProcess();
+    networkConnection->stopProcess();
     delete ui;
 }
 
 // Only allow one of the buttons pressable, and can only kick when turned on
 // This will help prevent issues
-void HomeWindow::on_startButton_clicked()
+void HomeMenu::on_startButton_clicked()
 {
     ui->startButton->setDisabled(true);
 
-    networkListener->startProcess();
+    networkConnection->startProcess();
 
     ui->stopButton->setDisabled(false);
-    ui->kickButton->setDisabled(false);
 }
-void HomeWindow::on_stopButton_clicked()
+void HomeMenu::on_stopButton_clicked()
 {
     ui->startButton->setDisabled(false);
 
-    networkListener->sendCommand("kick all");
-    networkListener->stopProcess();
+    networkConnection->sendCommand("disconnect");
+    networkConnection->stopProcess();
 
     ui->stopButton->setDisabled(true);
-    ui->kickButton->setDisabled(true);
 }
 
-void HomeWindow::updateStatus() {
+
+void HomeMenu::on_connectionSaveButton_clicked()
+{
+    SaveSettings();
+}
+
+void HomeMenu::updateStatus() {
     QPixmap on(":Images/on.png");
     QPixmap off(":Images/off.png");
 
     // Connection Status
-    if (networkListener->isProcessRunning()) {
+    if (networkConnection->isProcessRunning()) {
         ui->connectionStatusLight->setPixmap(on);
     } else {
         ui->connectionStatusLight->setPixmap(off);
     }
 }
 
-void HomeWindow::updateConnections() {
 
-    ui->connectionsList->clear();
-    QFile inputFile(buildPath + "/../config/connections.ini");
-    if (inputFile.open(QIODevice::ReadOnly))
-    {
-        QTextStream in(&inputFile);
-        while (!in.atEnd())
-        {
-
-            QString connectionText = in.readLine().remove(QChar('(')).remove(QChar(')')).remove(QChar('\'')).replace(", ", ":");
-            ui->connectionsList->addItem(connectionText);
-            //qDebug() << in.readLine();
-        }
-        inputFile.close();
-    }
-}
-
-void HomeWindow::on_kickButton_clicked()
-{
-    networkListener->sendCommand("kick all");
-}
-
-void HomeWindow::SettingsSetup() {
+void HomeMenu::SettingsSetup() {
     //Open the file
     QFile configFile(buildPath + "/../config/config.ini");
 
@@ -121,11 +99,10 @@ void HomeWindow::SettingsSetup() {
     // Assign values to variables
     ui->hostInputBox->setText(configMap.value("HOST", "localhost"));
     ui->portInputBox->setValue(configMap.value("PORT", "5000").toInt());
-    ui->timeoutInputBox->setValue(configMap.value("INACTIVITY_TIMEOUT", "3").toInt());
 }
 
 // Save the updated settings while preserving the original structure
-void HomeWindow::SaveSettings() {
+void HomeMenu::SaveSettings() {
     QFile configFile(buildPath + "/../config/config.ini");
 
     // Save the updated key value
@@ -154,17 +131,16 @@ void HomeWindow::SaveSettings() {
     }
 }
 
-// Change the settings
-void HomeWindow::on_portInputBox_valueChanged(int value)
+
+
+void HomeMenu::on_hostInputBox_textChanged(const QString &value)
 {
-    configMap["PORT"] = QString::number(value);
+    configMap["HOST"] = value;
 }
-void HomeWindow::on_timeoutInputBox_valueChanged(int value)
+
+
+void HomeMenu::on_portInputBox_textChanged(const QString &value)
 {
-    configMap["INACTIVITY_TIMEOUT"] = QString::number(value);
-}
-void HomeWindow::on_connectionSaveButton_clicked()
-{
-    SaveSettings();
+    configMap["PORT"] = value;
 }
 
