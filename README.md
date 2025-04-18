@@ -8,10 +8,10 @@ This is the main hub application, containing all the saved data. A public connec
 ### Features
 - [X] Design interface - Settled on Qt
 - [ ] Custom telemetry files
-- [ ] Database to store the telemetry
+- [X] Database to store the telemetry
 - [ ] Package app to run
 - [X] Global connection through computer IP
-- [ ] 
+- [ ] Port Forwarding
 
 ## Module Application 
 ### Description
@@ -31,7 +31,7 @@ This application would be the terminal or access points that would be run on lap
 - [ ] Format the data
 - [ ] Analyse the data
 - [X] Access to the computer (setting the server address)
-- [ ] Upload the data 
+- [X] Upload the data 
 - [ ] 
 
 ## End goal
