@@ -34,6 +34,10 @@ private slots:
 
     void on_hostInputBox_textChanged(const QString &value);
     void on_portInputBox_textChanged(const QString &value);
+    void on_clientInputBox_textChanged(const QString &value);
+
+    void on_fileSelectButton_clicked();
+    void on_fileSendButton_clicked();
 
 private:
     Ui::HomeMenu *ui;
@@ -43,5 +47,7 @@ private:
 
     QMap<QString, QString> configMap;
     QStringList configLines;
+
+    QString client_name;
 };
 #endif // HOMEMENU_H

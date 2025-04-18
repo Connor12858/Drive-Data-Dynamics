@@ -10,12 +10,28 @@ PythonProcess::PythonProcess(const QString &file, QObject *parent) : QObject(par
     pythonFile = file;
 }
 
-void PythonProcess::sendCommand(const QString &command) {
-    if (process->state() == QProcess::Running) {
-        process->write(command.toUtf8() + "\n");  // Send command to Python script
+void PythonProcess::sendCommand(const QString &command)
+{
+    if (process->state() == QProcess::Running)
+    {
+        process->write(command.toUtf8() + "\n"); // Send command to Python script
         process->waitForBytesWritten();
-    } else {
-        qDebug() << "Python process is not running.";
+    }
+    else
+    {
+        qDebug() << "Python process is not running. 1" << command;
+    }
+}
+void PythonProcess::sendByteArray(const QByteArray &command)
+{
+    if (process->state() == QProcess::Running)
+    {
+        process->write(command); // Send command to Python script
+        process->waitForBytesWritten();
+    }
+    else
+    {
+        qDebug() << "Python process is not running. 2";
     }
 }
 
@@ -65,9 +81,7 @@ void PythonProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatu
     }
 }
 
-bool PythonProcess::isProcessRunning() const {
+bool PythonProcess::isProcessRunning() const
+{
     return process->state() == QProcess::Running;
 }
-
-
-

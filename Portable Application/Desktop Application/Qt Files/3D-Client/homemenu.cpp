@@ -1,18 +1,25 @@
 #include "homemenu.h"
 #include "ui_homemenu.h"
 #include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
 
+// ──────────────────────────────────────────────
+// Constructor & Destructor
+// ──────────────────────────────────────────────
 HomeMenu::HomeMenu(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::HomeMenu), buildPath(QCoreApplication::applicationDirPath()), networkConnection(new PythonProcess(buildPath + "/../python_files/connection.py", this)), updateTimer(new QTimer(this))
+    : QMainWindow(parent),
+      ui(new Ui::HomeMenu),
+      buildPath(QCoreApplication::applicationDirPath()),
+      networkConnection(new PythonProcess(buildPath + "/../python_files/connection.py", this)),
+      updateTimer(new QTimer(this))
 {
     ui->setupUi(this);
 
-    // Setup the settings
     SettingsSetup();
 
-    // Connect QTimer to update the UI every second
     connect(updateTimer, &QTimer::timeout, this, &HomeMenu::updateStatus);
-    updateTimer->start(3000); // Check every 3 seconds
+    updateTimer->start(3000); // Update status every 3 seconds
 }
 
 HomeMenu::~HomeMenu()
@@ -21,47 +28,86 @@ HomeMenu::~HomeMenu()
     delete ui;
 }
 
-// Only allow one of the buttons pressable, and can only kick when turned on
-// This will help prevent issues
+// ──────────────────────────────────────────────
+// Button Slots
+// ──────────────────────────────────────────────
 void HomeMenu::on_startButton_clicked()
 {
     ui->startButton->setDisabled(true);
-
     networkConnection->startProcess();
-
     ui->stopButton->setDisabled(false);
 }
+
 void HomeMenu::on_stopButton_clicked()
 {
     ui->startButton->setDisabled(false);
-
     networkConnection->sendCommand("disconnect");
     networkConnection->stopProcess();
-
     ui->stopButton->setDisabled(true);
 }
 
-// Change the settings
-void HomeMenu::on_hostInputBox_textChanged(const QString &value)
-{
-    configMap["HOST"] = value;
-}
-void HomeMenu::on_portInputBox_textChanged(const QString &value)
-{
-    configMap["PORT"] = value;
-}
 void HomeMenu::on_connectionSaveButton_clicked()
 {
     SaveSettings();
 }
 
-// Intervally update the status of the connection
+void HomeMenu::on_fileSelectButton_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(
+        this, "Select a File", "C:/", "Log Files (*.log);;All Files (*)");
+
+    if (!filePath.isEmpty())
+    {
+        ui->filePathInputBox->setText(filePath);
+        ui->fileNameInputBox->setText(QFileInfo(filePath).fileName());
+    }
+}
+
+void HomeMenu::on_fileSendButton_clicked()
+{
+    networkConnection->sendCommand("file");
+    qDebug() << "Sending file data...";
+
+    networkConnection->sendCommand(ui->fileNameInputBox->text());
+    networkConnection->sendCommand(ui->clientInputBox->text());
+    networkConnection->sendCommand(ui->eventNameInputBox->text());
+
+    QFile file(ui->filePathInputBox->text());
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QByteArray fileData = file.readAll();
+        networkConnection->sendCommand(QString::number(fileData.size()));
+        networkConnection->sendByteArray(fileData);
+        file.close();
+    }
+}
+
+// ──────────────────────────────────────────────
+// Text Input Slots
+// ──────────────────────────────────────────────
+void HomeMenu::on_hostInputBox_textChanged(const QString &value)
+{
+    configMap["HOST"] = value;
+}
+
+void HomeMenu::on_portInputBox_textChanged(const QString &value)
+{
+    configMap["PORT"] = value;
+}
+
+void HomeMenu::on_clientInputBox_textChanged(const QString &value)
+{
+    configMap["NAME"] = value;
+}
+
+// ──────────────────────────────────────────────
+// Status Handling
+// ──────────────────────────────────────────────
 void HomeMenu::updateStatus()
 {
     QPixmap on(":Images/on.png");
     QPixmap off(":Images/off.png");
 
-    // Connection Status
     if (networkConnection->isProcessRunning())
     {
         ui->connectionStatusLight->setPixmap(on);
@@ -69,57 +115,51 @@ void HomeMenu::updateStatus()
     else
     {
         ui->connectionStatusLight->setPixmap(off);
+        ui->stopButton->setDisabled(true);
+        ui->startButton->setDisabled(false);
     }
 }
 
-// Setup the settings
+// ──────────────────────────────────────────────
+// Config Management
+// ──────────────────────────────────────────────
 void HomeMenu::SettingsSetup()
 {
-    // Open the file
     QFile configFile(buildPath + "/../config/config.ini");
-
     configMap.clear();
     configLines.clear();
 
-    // Map the config
     if (configFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream in(&configFile);
-
         while (!in.atEnd())
         {
             QString line = in.readLine();
             configLines.append(line);
 
-            // Ignore empty lines or comments
             if (line.trimmed().isEmpty() || line.startsWith("#") || !line.contains("="))
                 continue;
 
-            // Split into key and value
             QStringList parts = line.split("=", Qt::SkipEmptyParts);
             if (parts.size() == 2)
             {
                 QString key = parts[0].trimmed();
                 QString value = parts[1].trimmed();
-
                 configMap[key] = value;
             }
         }
-
         configFile.close();
     }
 
-    // Assign values to variables
     ui->hostInputBox->setText(configMap.value("HOST", "localhost"));
     ui->portInputBox->setValue(configMap.value("PORT", "5000").toInt());
+    ui->clientInputBox->setText(configMap.value("NAME", "User"));
 }
 
-// Save the updated settings while preserving the original structure
 void HomeMenu::SaveSettings()
 {
     QFile configFile(buildPath + "/../config/config.ini");
 
-    // Save the updated key value
     if (configFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
     {
         QTextStream out(&configFile);
@@ -128,7 +168,6 @@ void HomeMenu::SaveSettings()
         {
             QString trimmedLine = line.trimmed();
 
-            // If it's a key=value pair, update it
             if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("#") && trimmedLine.contains("="))
             {
                 QStringList parts = trimmedLine.split("=", Qt::SkipEmptyParts);
@@ -137,11 +176,11 @@ void HomeMenu::SaveSettings()
                     QString key = parts[0].trimmed();
                     if (configMap.contains(key))
                     {
-                        line = key + "=" + configMap[key]; // Replace with new value
+                        line = key + "=" + configMap[key];
                     }
                 }
             }
-            out << line << "\n"; // Write the (updated) line
+            out << line << "\n";
         }
 
         configFile.close();

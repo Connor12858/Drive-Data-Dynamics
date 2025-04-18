@@ -1,4 +1,5 @@
 import time
+import os
 
 def announce(client_socket, message):
     try:
@@ -14,3 +15,4 @@ def announce(client_socket, message):
         if client_socket:
             client_socket.close()
             print("Connection closed.")
+            os._exit(0)

@@ -7,6 +7,7 @@ import string
 import os
 import kick_all
 import sys
+from Database import file_handler
 
 # Constants
 INACTIVITY_TIMEOUT = HOST = PORT = REQUEST_MESSAGE = None
@@ -83,8 +84,39 @@ def handle_client(client_socket, address):
                 client_socket.sendall(ANNOUNCE_MESSAGE.encode('utf-8'))
                 log(f"Announcement message requested from {address}")
             elif message.startswith("FILE"):
-                # Create a file in the logs
-                pass
+                try:
+                    print(f"File command received from {address}", flush=True)
+                    # Expecting the following messages in order:
+                    client_socket.sendall(b"READY_CLIENT")
+                    client_name = client_socket.recv(1024).decode().strip()
+                    print(f"Client name: {client_name}", flush=True)
+
+                    client_socket.sendall(b"READY_EVENT")
+                    event_name = client_socket.recv(1024).decode().strip()
+                    print(f"Event name: {event_name}", flush=True)
+
+                    client_socket.sendall(b"READY_FILENAME")
+                    filename = client_socket.recv(1024).decode().strip()
+                    print(f"Filename: {filename}", flush=True)
+
+                    client_socket.sendall(b"READY_FILE")
+                    file_data = b''
+                    while True:
+                        chunk = client_socket.recv(4096)
+                        client_activity[address] = time.time()
+                        if b"<<EOF>>" in chunk:
+                            chunk = chunk.replace(b"<<EOF>>", b"")
+                            file_data += chunk
+                            break
+                        file_data += chunk
+                    print(f"File data length: {len(file_data)}", flush=True)
+                    print(f"File data received from {address}", flush=True)
+
+                    file_handler.process_received_file(client_name, event_name, filename, file_data)
+                    client_socket.sendall(b"FINSIHED")
+                except Exception as e:
+                    log(f"File handling failed: {e}")
+                    client_socket.sendall(b"FINSIHED")
             else:
                 log(f"Received from {address}: {message}")
 

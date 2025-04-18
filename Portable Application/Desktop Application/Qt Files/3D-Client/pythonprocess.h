@@ -19,6 +19,8 @@ public:
 
     void sendCommand(const QString &command);
 
+    void sendByteArray(const QByteArray &command);
+
     bool isProcessRunning() const;
 
 private slots:
@@ -32,6 +34,5 @@ private:
     QString pythonFile;
     QProcess *process;
 };
-
 
 #endif // PYTHONPROCESS_H

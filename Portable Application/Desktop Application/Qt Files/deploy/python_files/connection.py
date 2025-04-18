@@ -3,7 +3,9 @@ import time
 import threading
 import os
 from announce import announce
+from file_sender import send_file
 import sys
+import select
 
 
 # Constants
@@ -13,12 +15,28 @@ CONFIG_FILE = os.path.join(os.path.dirname(__file__), "../config/config.ini")
 
 # Function to handle commands from Qt
 def handle_commands():
+
     while True:
         try:
             command = sys.stdin.readline().strip()  # Read input from Qt
             if command == "disconnect":
                 client_socket.close()
                 sys.exit(0)
+            elif command == "file":
+                print("File command received", flush=True)
+                # Handle file command
+                filename = sys.stdin.readline().strip()
+                print(f"Filename: {filename}", flush=True)
+                client_name = sys.stdin.readline().strip()
+                print(f"Client name: {client_name}", flush=True)
+                event_name = sys.stdin.readline().strip()
+                print(f"Event name: {event_name}", flush=True)
+                file_size = int(sys.stdin.readline().strip())
+                print(f"File size: {file_size}", flush=True)
+                file_data = sys.stdin.buffer.read(file_size)
+                print(f"File data length: {len(file_data)}", flush=True)
+                client_socket.sendall(b"FILE")
+                send_file(client_socket, filename, client_name, event_name, file_data)
             else:
                 pass
                 #print(f"Unknown command: {command}", flush=True)
@@ -52,16 +70,19 @@ def setup():
 def connect():
     global client_socket
 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((SERVER_IP, SERVER_PORT))
-    client_socket.sendall(REQUEST_MESSAGE.encode('utf-8'))
-    return client_socket.recv(1024).decode('utf-8')
+    try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((SERVER_IP, SERVER_PORT))
+        client_socket.sendall(REQUEST_MESSAGE.encode('utf-8'))
+        return client_socket.recv(1024).decode('utf-8')
+    except Exception as e:
+        print(f"Error: {e}")
+        os._exit(0)
 
 def main():
     message = connect()
 
-    announce_thread = threading.Thread(target=announce, args=(client_socket, message))
-    announce_thread.start()
+    announce(client_socket, message)
 
 if __name__ == "__main__":
     setup()
