@@ -4,3 +4,5 @@ Server Application/Deploy
 Server Application/Desktop Application/Qt Files/deploy
 Portable Application/Deploy
 Portable Application/Desktop Application/Qt Files/deploy
+/Portable Application/Desktop Application/Qt Files/deploy/python_files/__pycache__
+/.vscode
