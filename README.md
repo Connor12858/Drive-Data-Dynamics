@@ -1,3 +1,5 @@
+**NOTE: My time is no longer able to support working on this project. It has become redunant to work on a car project that is not usable for the racing team I am on.**
+
 # Drive-Data-Dynamics
 A system that will save telemetry data from several commercial cars, after being driven. This project will contain several projects in different folders. Here is the aim and goals from the project (given  I don't randomly change projects). 
 
