@@ -7,19 +7,19 @@ import string
 import os
 import kick_all
 import sys
-from Database import file_handler
+import file_handler
 
 # Constants
 INACTIVITY_TIMEOUT = HOST = PORT = REQUEST_MESSAGE = None
 ANNOUNCE_MESSAGE = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
 CONNECTIONS_FILE = os.path.join(os.path.dirname(__file__), "../config/connections.ini")
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "../config/config.ini")  
-LOG_FILE = os.path.join(os.path.dirname(__file__), "log.txt")
+LOG_FILE = os.path.join(os.path.dirname(__file__), "../libs/log.txt")
 
 # Global dictionary to store client information (address: last_activity_time)
-client_activity = {} # Store client activity for inactivity check
-client_sockets = {}  # Store client sockets for proper closing
-client_threads = {}  # Store client threads for proper closing
+client_activity = {} 
+client_sockets = {} 
+client_threads = {}  
 
 def log(message):
     with open(LOG_FILE, 'a') as f:

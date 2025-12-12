@@ -44,6 +44,7 @@ private slots:
     // Periodic Updates
     void updateStatus();
     void updateConnections();
+    void updateProcess();
 
     // Directory + File Handling
     void fetchLogFiles();

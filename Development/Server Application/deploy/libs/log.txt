@@ -1,0 +1,10 @@
+Thu Apr 17 22:31:06 2025: Error with ('127.0.0.1', 24776): [WinError 10038] An operation was attempted on something that is not a socket
+Thu Apr 17 22:36:29 2025: Connection closed with ('127.0.0.1', 24972)
+Thu Apr 17 22:36:29 2025: Removed inactive client: ('127.0.0.1', 24972)
+Thu Apr 17 22:37:08 2025: Connection established with ('127.0.0.1', 25018)
+Thu Apr 17 22:37:08 2025: Announcement message requested from ('127.0.0.1', 25018)
+Thu Apr 17 22:37:42 2025: Connection reset by ('127.0.0.1', 25018)
+Thu Apr 17 22:37:42 2025: Connection closed with ('127.0.0.1', 25018)
+Thu Apr 17 22:37:42 2025: Removed inactive client: ('127.0.0.1', 25018)
+Thu Apr 17 22:42:24 2025: Connection established with ('127.0.0.1', 25238)
+Thu Apr 17 22:42:24 2025: Announcement message requested from ('127.0.0.1', 25238)

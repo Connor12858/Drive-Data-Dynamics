@@ -6,9 +6,6 @@
 #include <QDirIterator>
 #include <QSet>
 
-// ──────────────────────────────────────────────
-// Constructor & Destructor
-// ──────────────────────────────────────────────
 HomeWindow::HomeWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::HomeWindow),
@@ -23,12 +20,15 @@ HomeWindow::HomeWindow(QWidget *parent)
     QTimer *logsTimer = new QTimer(this);
     QTimer *updateTimer = new QTimer(this);
 
+    // Connect the timers and start them
     connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateStatus);
     connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateConnections);
+    connect(updateTimer, &QTimer::timeout, this, &HomeWindow::updateProcess);
     updateTimer->start(1000);
 
+    // Create a connection to the data base
     dbManager = new DatabaseManager(this);
-    dbManager->openDatabase(QDir::currentPath() + "/can_logs.db");
+    dbManager->openDatabase(QDir::currentPath() + "/../libs/can_logs.db");
 
     // Watch folders
     QString watchFolderPath = QDir::currentPath() + "/../can_logs";
@@ -46,6 +46,7 @@ HomeWindow::HomeWindow(QWidget *parent)
     connect(logsTimer, &QTimer::timeout, this, &HomeWindow::fetchLogFiles);
     logsTimer->start(10000);
 
+    // Lets display the database
     dbModel = new QSqlTableModel(this);
     setupTableView();
     fetchLogFiles();
@@ -61,9 +62,10 @@ HomeWindow::~HomeWindow()
     delete ui;
 }
 
-// ──────────────────────────────────────────────
-// UI & Interaction Slots
-// ──────────────────────────────────────────────
+/*
+ * Below are the functions for interactivity
+ */
+// Start button
 void HomeWindow::on_startButton_clicked()
 {
     ui->startButton->setDisabled(true);
@@ -71,7 +73,7 @@ void HomeWindow::on_startButton_clicked()
     ui->stopButton->setDisabled(false);
     ui->kickButton->setDisabled(false);
 }
-
+// Stop Button
 void HomeWindow::on_stopButton_clicked()
 {
     ui->startButton->setDisabled(false);
@@ -101,9 +103,9 @@ void HomeWindow::on_timeoutInputBox_valueChanged(int value)
     configMap["INACTIVITY_TIMEOUT"] = QString::number(value);
 }
 
-// ──────────────────────────────────────────────
-// Timed Updates
-// ──────────────────────────────────────────────
+/*
+ *Functions for the timers
+ */
 void HomeWindow::updateStatus()
 {
     QPixmap on(":Images/on.png");
@@ -130,9 +132,17 @@ void HomeWindow::updateConnections()
     }
 }
 
-// ──────────────────────────────────────────────
-// Config Management
-// ──────────────────────────────────────────────
+void HomeWindow::updateProcess() {
+    if (!this->networkListener->isProcessRunning()) {
+        ui->startButton->setDisabled(false);
+        ui->stopButton->setDisabled(true);
+        ui->kickButton->setDisabled(true);
+    }
+}
+
+/*
+ * Configurations functions
+ */
 void HomeWindow::SettingsSetup()
 {
     QFile configFile(buildPath + "/../config/config.ini");
@@ -190,9 +200,9 @@ void HomeWindow::SaveSettings()
         qDebug() << "Failed to open config file for writing.";
 }
 
-// ──────────────────────────────────────────────
-// Database & File Management
-// ──────────────────────────────────────────────
+/*
+ * Database and file management
+ */
 void HomeWindow::fetchLogFiles()
 {
     dbModel->select();
@@ -251,9 +261,9 @@ void HomeWindow::setupTableView()
     ui->dbTableView->setRowHeight(0, 30);
 }
 
-// ──────────────────────────────────────────────
-// Helper Functions
-// ──────────────────────────────────────────────
+/*
+ * Assist with getting the subdirectories
+ */
 QStringList HomeWindow::getAllSubdirectories(const QString &path)
 {
     QStringList directories;

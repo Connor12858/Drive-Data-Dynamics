@@ -4,12 +4,14 @@
 #include <QObject>
 #include <QString>
 
+// Class to run python scripts
 PythonProcess::PythonProcess(const QString &file, QObject *parent) : QObject(parent)
 {
     process = new QProcess(this);
     pythonFile = file;
 }
 
+// Send a message to the python script
 void PythonProcess::sendCommand(const QString &command) {
     if (process->state() == QProcess::Running) {
         process->write(command.toUtf8() + "\n");  // Send command to Python script
@@ -19,11 +21,12 @@ void PythonProcess::sendCommand(const QString &command) {
     }
 }
 
+// Start the python script
 void PythonProcess::startProcess()
 {
-    // Run Python in unbuffered mode (-u)
+    // Run Python
     process->setProcessChannelMode(QProcess::MergedChannels);
-    process->start("python", QStringList() << "-u" << pythonFile);
+    process->start("python", QStringList() << pythonFile);
 
     // Read standard output in real-time
     connect(process, &QProcess::readyReadStandardOutput, this, &PythonProcess::readOutput);
@@ -32,6 +35,7 @@ void PythonProcess::startProcess()
             this, &PythonProcess::processFinished);
 }
 
+// Close the python script
 void PythonProcess::stopProcess()
 {
     if (process->state() == QProcess::Running)
@@ -44,18 +48,21 @@ void PythonProcess::stopProcess()
     }
 }
 
+// Read the output that python generates
 void PythonProcess::readOutput()
 {
     QByteArray output = process->readAllStandardOutput();
     qDebug() << "Python Output:" << QString(output);
 }
 
+// Read the error that python generates
 void PythonProcess::readError()
 {
     QByteArray errorOutput = process->readAllStandardError();
     qDebug() << "Python Error:" << QString(errorOutput);
 }
 
+// Let the user know the script finished
 void PythonProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     qDebug() << "Python process finished with exit code:" << exitCode;
@@ -65,6 +72,7 @@ void PythonProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatu
     }
 }
 
+// Check if the python script is running
 bool PythonProcess::isProcessRunning() const {
     return process->state() == QProcess::Running;
 }

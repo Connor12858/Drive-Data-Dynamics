@@ -4,9 +4,6 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-// ──────────────────────────────────────────────
-// Constructor & Destructor
-// ──────────────────────────────────────────────
 HomeMenu::HomeMenu(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::HomeMenu),
@@ -19,7 +16,7 @@ HomeMenu::HomeMenu(QWidget *parent)
     SettingsSetup();
 
     connect(updateTimer, &QTimer::timeout, this, &HomeMenu::updateStatus);
-    updateTimer->start(3000); // Update status every 3 seconds
+    updateTimer->start(1000);
 }
 
 HomeMenu::~HomeMenu()
@@ -28,9 +25,6 @@ HomeMenu::~HomeMenu()
     delete ui;
 }
 
-// ──────────────────────────────────────────────
-// Button Slots
-// ──────────────────────────────────────────────
 void HomeMenu::on_startButton_clicked()
 {
     ui->startButton->setDisabled(true);
@@ -54,7 +48,7 @@ void HomeMenu::on_connectionSaveButton_clicked()
 void HomeMenu::on_fileSelectButton_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(
-        this, "Select a File", "C:/", "Log Files (*.log);;All Files (*)");
+        this, "Select a File", QCoreApplication::applicationDirPath(), "Log Files (*.log);;All Files (*)");
 
     if (!filePath.isEmpty())
     {
@@ -70,7 +64,9 @@ void HomeMenu::on_fileSendButton_clicked()
 
     networkConnection->sendCommand(ui->fileNameInputBox->text());
     networkConnection->sendCommand(ui->clientInputBox->text());
+    qDebug() << ui->clientInputBox->text();
     networkConnection->sendCommand(ui->eventNameInputBox->text());
+
 
     QFile file(ui->filePathInputBox->text());
     if (file.open(QIODevice::ReadOnly))
@@ -82,9 +78,6 @@ void HomeMenu::on_fileSendButton_clicked()
     }
 }
 
-// ──────────────────────────────────────────────
-// Text Input Slots
-// ──────────────────────────────────────────────
 void HomeMenu::on_hostInputBox_textChanged(const QString &value)
 {
     configMap["HOST"] = value;
@@ -100,9 +93,6 @@ void HomeMenu::on_clientInputBox_textChanged(const QString &value)
     configMap["NAME"] = value;
 }
 
-// ──────────────────────────────────────────────
-// Status Handling
-// ──────────────────────────────────────────────
 void HomeMenu::updateStatus()
 {
     QPixmap on(":Images/on.png");
@@ -120,9 +110,6 @@ void HomeMenu::updateStatus()
     }
 }
 
-// ──────────────────────────────────────────────
-// Config Management
-// ──────────────────────────────────────────────
 void HomeMenu::SettingsSetup()
 {
     QFile configFile(buildPath + "/../config/config.ini");

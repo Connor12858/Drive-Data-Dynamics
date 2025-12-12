@@ -7,6 +7,7 @@ using namespace Qt;
 
 int main(int argc, char *argv[])
 {
+    // Launch the application
     QApplication a(argc, argv);
     HomeWindow w;
     w.show();

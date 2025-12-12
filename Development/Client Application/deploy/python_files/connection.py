@@ -3,7 +3,7 @@ import time
 import threading
 import os
 from announce import announce
-from file_sender import send_file
+from file_handler import send_file
 import sys
 import select
 
@@ -35,7 +35,6 @@ def handle_commands():
                 print(f"File size: {file_size}", flush=True)
                 file_data = sys.stdin.buffer.read(file_size)
                 print(f"File data length: {len(file_data)}", flush=True)
-                client_socket.sendall(b"FILE")
                 send_file(client_socket, filename, client_name, event_name, file_data)
             else:
                 pass

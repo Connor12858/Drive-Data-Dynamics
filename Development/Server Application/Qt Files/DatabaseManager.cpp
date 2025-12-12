@@ -12,6 +12,7 @@ DatabaseManager::~DatabaseManager()
     }
 }
 
+// Open the database to connect to
 bool DatabaseManager::openDatabase(const QString &dbPath)
 {
     // Set up the database connection
@@ -26,6 +27,7 @@ bool DatabaseManager::openDatabase(const QString &dbPath)
     return true;
 }
 
+// Add a log gile
 bool DatabaseManager::insertLogFile(const QString &filename, const QString &filepath, const QString &clientName, const QString &eventName)
 {
     // Insert a new log file record into the database
@@ -46,6 +48,7 @@ bool DatabaseManager::insertLogFile(const QString &filename, const QString &file
     return true;
 }
 
+// Get all the log files
 void DatabaseManager::fetchLogFiles()
 {
     // Fetch all log files from the database
@@ -61,6 +64,7 @@ void DatabaseManager::fetchLogFiles()
     }
 }
 
+// Check if connection to database is open
 bool DatabaseManager::isOpen() {
     return db.isOpen();
 }
