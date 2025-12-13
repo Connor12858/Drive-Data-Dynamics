@@ -8,7 +8,7 @@ HomeMenu::HomeMenu(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::HomeMenu),
       buildPath(QCoreApplication::applicationDirPath()),
-      networkConnection(new PythonProcess(buildPath + "/../python_files/connection.py", this)),
+      networkConnection(new PythonProcess(buildPath + "/../libs/connection.py", this)),
       updateTimer(new QTimer(this))
 {
     ui->setupUi(this);

@@ -243,3 +243,4 @@ Development/**/*.exe
 *.stash
 /Development/Server Application/deploy/bin
 /Development/Server Application/Qt Files/release
+/Release
