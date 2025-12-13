@@ -3,7 +3,7 @@ import os
 import time
 
 # Database file path
-DB_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "can_logs.db")
+DB_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../logs/can_logs.db")
 
 def create_database():
     conn = sqlite3.connect(DB_FILE)

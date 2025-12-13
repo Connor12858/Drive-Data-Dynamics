@@ -10,7 +10,7 @@ HomeWindow::HomeWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::HomeWindow),
       buildPath(QCoreApplication::applicationDirPath()),
-      networkListener(new PythonProcess(buildPath + "/../python_files/listener.py", this)),
+      networkListener(new PythonProcess(buildPath + "/../libs/listener.py", this)),
       fileWatcher(new QFileSystemWatcher(this))
 {
     ui->setupUi(this);
@@ -28,10 +28,10 @@ HomeWindow::HomeWindow(QWidget *parent)
 
     // Create a connection to the data base
     dbManager = new DatabaseManager(this);
-    dbManager->openDatabase(QDir::currentPath() + "/../libs/can_logs.db");
+    dbManager->openDatabase(QDir::currentPath() + "/../logs/can_logs.db");
 
     // Watch folders
-    QString watchFolderPath = QDir::currentPath() + "/../can_logs";
+    QString watchFolderPath = QDir::currentPath() + "/../logs/can_logs";
     QStringList allDirs = getAllSubdirectories(watchFolderPath);
     for (const QString &dir : allDirs)
         if (!fileWatcher->directories().contains(dir))

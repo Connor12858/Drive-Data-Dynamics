@@ -14,7 +14,7 @@ INACTIVITY_TIMEOUT = HOST = PORT = REQUEST_MESSAGE = None
 ANNOUNCE_MESSAGE = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
 CONNECTIONS_FILE = os.path.join(os.path.dirname(__file__), "../config/connections.ini")
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "../config/config.ini")  
-LOG_FILE = os.path.join(os.path.dirname(__file__), "../libs/log.txt")
+LOG_FILE = os.path.join(os.path.dirname(__file__), "../logs/log.txt")
 
 # Global dictionary to store client information (address: last_activity_time)
 client_activity = {} 

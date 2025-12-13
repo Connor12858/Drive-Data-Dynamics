@@ -5,8 +5,8 @@ import time
 
 # Config
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-LOGS_DIR = os.path.join(BASE_DIR, "../libs/logs")
-DB_FILE = os.path.join(BASE_DIR, "../libs/can_logs.db")
+LOGS_DIR = os.path.join(BASE_DIR, "../logs/logs")
+DB_FILE = os.path.join(BASE_DIR, "../logs/can_logs.db")
 
 def ensure_folder(path):
     if not os.path.exists(path):
