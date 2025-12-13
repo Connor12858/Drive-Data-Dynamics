@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 ; Non-commercial use only
 
-#define MyAppName "Drive Data Dynamics"
+#define MyAppName "Drive Data Dynamics [SERVER]"
 #define MyAppVersion "1.1"
 #define MyAppPublisher "Connor Godden"
 #define MyAppExeName "3D.exe"
@@ -31,6 +31,8 @@ AllowNoIcons=yes
 PrivilegesRequired=lowest
 SolidCompression=yes
 WizardStyle=modern dynamic windows11
+OutputDir=../../../Release/{#MyAppVersion}
+OutputBaseFilename=Server-{#MyAppVersion}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -39,18 +41,18 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\bin\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\config\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\libs\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\logs\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\bin\{#MyAppExeName}"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\config\*"; DestDir: "{app}\config"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\libs\*"; DestDir: "{app}\libs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\canop\Code Projects\Drive-Data-Dynamics\Development\Workbench-Enviroment\Server-Libs\logs\*"; DestDir: "{app}\logs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 

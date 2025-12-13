@@ -234,11 +234,7 @@ __marimo__/
 *.debug
 *.pro
 Development/**/*.exe
-/Development/Client Application/Qt Files/debug
-/Development/Server Application/Qt Files/debug
-/Development/Server Application/deploy/libs/can_logs.db
-/Development/Server Application/deploy/libs/log.txt
-/Development/Server Application/deploy/libs/logs
 *.stash
-/Development/Server Application/deploy/bin
-/Development/Server Application/Qt Files/release
+/Release
+/Development/Server Application
+/Development/Client Application
