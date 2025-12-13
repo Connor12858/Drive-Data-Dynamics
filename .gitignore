@@ -234,7 +234,6 @@ __marimo__/
 *.debug
 *.pro
 Development/**/*.exe
-/Development/Workbench-Enviroment
 /Development/Client Application/Qt Files/debug
 /Development/Server Application/Qt Files/debug
 /Development/Server Application/deploy/libs/can_logs.db
