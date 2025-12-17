@@ -1,4 +1,4 @@
-#include "pythonprocess.h"
+#include "PythonProcess.h"
 #include <QProcess>
 #include <QDebug>
 #include <QObject>

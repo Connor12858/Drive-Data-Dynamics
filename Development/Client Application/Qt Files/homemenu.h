@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QProcess>
-#include <pythonprocess.h>
+#include <CustomClasses/PythonProcess.h>
+#include <Extras/States.h>
 #include <QTimer>
 
 QT_BEGIN_NAMESPACE

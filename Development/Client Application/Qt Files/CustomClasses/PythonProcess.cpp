@@ -8,6 +8,7 @@ PythonProcess::PythonProcess(const QString &file, QObject *parent) : QObject(par
 {
     process = new QProcess(this);
     pythonFile = file;
+    _good = false;
 }
 
 void PythonProcess::sendCommand(const QString &command)
@@ -50,19 +51,23 @@ void PythonProcess::startProcess()
 
 void PythonProcess::stopProcess()
 {
-    if (process->state() == QProcess::Running)
-    {
+    if (process->state() == QProcess::Running) {
         process->terminate(); // Gracefully stop the process
-        if (!process->waitForFinished(1000))
-        {
+        if (!process->waitForFinished(1000)) {
             process->kill(); // Force kill if it doesn't stop
         }
     }
+    _good = false;
 }
 
 void PythonProcess::readOutput()
 {
     QByteArray output = process->readAllStandardOutput();
+
+    if (output == "CMD-SET-GOOD") {
+        _good = true;
+    }
+
     qDebug() << "Python Output:" << QString(output);
 }
 
@@ -75,8 +80,7 @@ void PythonProcess::readError()
 void PythonProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     qDebug() << "Python process finished with exit code:" << exitCode;
-    if (exitStatus == QProcess::CrashExit)
-    {
+    if (exitStatus == QProcess::CrashExit) {
         qDebug() << "Python script crashed!";
     }
 }
@@ -84,4 +88,12 @@ void PythonProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatu
 bool PythonProcess::isProcessRunning() const
 {
     return process->state() == QProcess::Running;
+}
+
+bool PythonProcess::isGood() const {
+    return _good;
+}
+
+void PythonProcess::setToGood(bool state) {
+    _good = state;
 }

@@ -23,7 +23,12 @@ public:
 
     bool isProcessRunning() const;
 
+    bool isGood() const;
+
+    void setToGood(bool state);
+
 private slots:
+
     void readOutput();
 
     void readError();
@@ -33,6 +38,7 @@ private slots:
 private:
     QString pythonFile;
     QProcess *process;
+    bool _good;
 };
 
 #endif // PYTHONPROCESS_H

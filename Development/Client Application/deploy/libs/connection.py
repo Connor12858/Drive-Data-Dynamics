@@ -65,7 +65,6 @@ def setup():
         SERVER_PORT = 12345
         REQUEST_MESSAGE = "REQUEST"
 
-
 def connect():
     global client_socket
 
@@ -73,6 +72,7 @@ def connect():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((SERVER_IP, SERVER_PORT))
         client_socket.sendall(REQUEST_MESSAGE.encode('utf-8'))
+        print("CMD-SET-GOOD", flush=True, end='')
         return client_socket.recv(1024).decode('utf-8')
     except Exception as e:
         print(f"Error: {e}")

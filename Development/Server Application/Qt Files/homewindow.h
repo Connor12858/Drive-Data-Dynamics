@@ -9,8 +9,9 @@
 #include <QSqlTableModel>
 #include <QFileSystemWatcher>
 
-#include "pythonprocess.h"
-#include "DatabaseManager.h"
+#include "CustomClasses/PythonProcess.h"
+#include "CustomClasses/DatabaseManager.h"
+#include "Extras/States.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

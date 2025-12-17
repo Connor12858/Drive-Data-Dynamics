@@ -4,5 +4,6 @@
         <file>Images/on.png</file>
         <file>Images/carDesign1.png</file>
         <file>Images/carDesign2.png</file>
+        <file>Images/waiting.png</file>
     </qresource>
 </RCC>
